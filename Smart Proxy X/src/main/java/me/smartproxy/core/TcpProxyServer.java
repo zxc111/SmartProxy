@@ -14,6 +14,7 @@ import me.smartproxy.tunnel.RawTunnel;
 import me.smartproxy.tunnel.Tunnel;
 import me.smartproxy.tunnel.httpconnect.HttpConnectConfig;
 import me.smartproxy.tunnel.shadowsocks.ShadowsocksConfig;
+import me.smartproxy.core.tmpConfig;
 
 public class TcpProxyServer implements Runnable {
 
@@ -102,11 +103,18 @@ public class TcpProxyServer implements Runnable {
 		short portKey=(short)localChannel.socket().getPort();
 		NatSession session =NatSessionManager.getSession(portKey);
 		if (session != null) {
-			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP)){
+		    // 判断是否走代理
+			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP) || !tmpConfig.bypass){
+				// nghttpx 往远端发不走代理
+				if (session.RemoteHost.equals(tmpConfig.remoteIp)){
+					return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
+				}
+
 				if(ProxyConfig.IS_DEBUG)
 					System.out.printf("%d/%d:[PROXY] %s=>%s:%d\n",NatSessionManager.getSessionCount(), Tunnel.SessionCount,session.RemoteHost,CommonMethods.ipIntToString(session.RemoteIP),session.RemotePort&0xFFFF);
 				return InetSocketAddress.createUnresolved(session.RemoteHost, session.RemotePort&0xFFFF);
 			}else {
+			    // 直接放行
 			    return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
 			}
 		}

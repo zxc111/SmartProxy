@@ -1,52 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/configUrlLayout"
+        android:id="@+id/configInfo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="251dp"
         android:orientation="vertical"
-        android:padding="13dp" >
+        android:padding="13dp">
 
- 		<TextView
-                android:id="@+id/textViewConfigUrlTitle"
-                android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="host ip" />
+
+            <EditText
+                android:id="@+id/remoteIp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:text="@string/config_url"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:ems="10"
+                android:inputType="text"
+                android:selectAllOnFocus="false"
+                android:singleLine="false" />
+        </LinearLayout>
 
-       <TextView
-                android:id="@+id/textViewConfigUrl"
-                android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="host port" />
+
+            <EditText
+                android:id="@+id/remotePort"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:text="@string/config_not_set_value"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:ems="10"
+                android:inputType="text" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="用户名" />
+
+            <EditText
+                android:id="@+id/UserName"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="密码" />
+
+            <EditText
+                android:id="@+id/Password"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="保存" />
+
+            <Button
+                android:id="@+id/startNghttpx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开启Nghttp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/bypassChina"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:duplicateParentState="true"
+            android:text="绕过国内" />
     </LinearLayout>
-   
-      <View
+
+    <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray" 
-        android:layout_marginLeft="8dp" 
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:alpha="0.4"/>
+        android:alpha="0.4"
+        android:background="@android:color/darker_gray" />
 
     <ScrollView
         android:id="@+id/scrollViewLog"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewLog"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="13dp"
                 android:textAppearance="?android:attr/textAppearanceSmall" />

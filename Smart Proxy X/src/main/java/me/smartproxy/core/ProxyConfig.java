@@ -1,7 +1,6 @@
 package me.smartproxy.core;
  
 import android.annotation.SuppressLint;
-import android.os.Build;
 
 import java.io.FileInputStream;
 import java.net.InetAddress;
@@ -18,13 +17,7 @@ import me.smartproxy.tcpip.CommonMethods;
 import me.smartproxy.tunnel.Config;
 import me.smartproxy.tunnel.httpconnect.HttpConnectConfig;
 import me.smartproxy.tunnel.shadowsocks.ShadowsocksConfig;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
+import me.smartproxy.core.tmpConfig;
 
 public class ProxyConfig {
 	public static final ProxyConfig Instance=new ProxyConfig();
@@ -206,6 +199,7 @@ public class ProxyConfig {
 	}
 	
     public boolean needProxy(String host,int ip){
+		System.out.println(String.format("%s %s ", host, ip));
     	if(host!=null){
     		Boolean stateBoolean=getDomainState(host);
     		if(stateBoolean!=null){
@@ -225,10 +219,11 @@ public class ProxyConfig {
     public boolean isIsolateHttpHostHeader(){
     	return m_isolate_http_host_header;
     }
-    
+
+
     private String[] downloadConfig(String url) throws Exception{
     	try {
-    		HttpClient client=new DefaultHttpClient();
+/*    		HttpClient client=new DefaultHttpClient();
         	HttpGet requestGet=new HttpGet(url);
         	
         	requestGet.addHeader("X-Android-MODEL", Build.MODEL);
@@ -239,7 +234,13 @@ public class ProxyConfig {
         	requestGet.setHeader("User-Agent", System.getProperty("http.agent"));
             HttpResponse response=client.execute(requestGet);
             
-            String configString=EntityUtils.toString(response.getEntity(),"UTF-8");
+            String configString=EntityUtils.toString(response.getEntity(),"UTF-8");*/
+            String user_pwd = "";
+			if (!tmpConfig.UserName.equals("")){
+				user_pwd = String.format("%s:%s@", tmpConfig.UserName, tmpConfig.Password);
+			}
+            //String configString = String.format("proxy http://%s%s:%s", user_pwd, tmpConfig.remoteIp, tmpConfig.remotePort);
+            String configString = String.format("proxy http://%s127.0.0.1:9000", user_pwd);
             String[] lines=configString.split("\\n");
             return lines;
     	}
