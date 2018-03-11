@@ -131,9 +131,16 @@ public class MainActivity extends Activity implements
                 tmpConfig.remotePort = Port;
 
                 try {
-                    copyBigDataToSD(exe_path+"nghttpx", "nghttpx");
-                    exe_file = new File(exe_path+"nghttpx");
-                    exe_file.setExecutable(true, true);
+                    String filePath =  exe_path+"nghttpx";
+                    File f=new File(filePath);
+
+                    if(!f.exists())
+                    {
+                        copyBigDataToSD(filePath, "nghttpx");
+                        exe_file = new File(filePath);
+                        exe_file.setExecutable(true, true);
+                    }
+
                     nghttpxCmd = exe_path+"nghttpx";
                     startNghttpx();
                 } catch (IOException e1) {
