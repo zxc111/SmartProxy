@@ -130,22 +130,7 @@ public class MainActivity extends Activity implements
                 setConfigKey(PortKey, Port);
                 tmpConfig.remotePort = Port;
 
-                try {
-                    String filePath =  exe_path+"nghttpx";
-                    File f=new File(filePath);
 
-                    if(!f.exists())
-                    {
-                        copyBigDataToSD(filePath, "nghttpx");
-                        exe_file = new File(filePath);
-                        exe_file.setExecutable(true, true);
-                    }
-
-                    nghttpxCmd = exe_path+"nghttpx";
-                    startNghttpx();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
             }
         });
     }
@@ -313,6 +298,24 @@ public class MainActivity extends Activity implements
             switchProxy.setEnabled(false);
 
             if (isChecked) {
+                try {
+                    String filePath =  exe_path+"nghttpx";
+                    File f=new File(filePath);
+
+                    if(!f.exists())
+                    {
+                        copyBigDataToSD(filePath, "nghttpx");
+
+                    }
+                    // copyBigDataToSD(filePath, "nghttpx");
+                    exe_file = new File(filePath);
+                    exe_file.setExecutable(true, true);
+                    nghttpxCmd = exe_path+"nghttpx";
+
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                startNghttpx();
                 setBypass(); // 绕过国内
                 Intent intent = LocalVpnService.prepare(this);
                 if (intent == null) {
@@ -485,6 +488,7 @@ public class MainActivity extends Activity implements
     private void execCmd() throws IOException {
         Runtime runtime = Runtime.getRuntime();
         String backendConfig = String.format("--backend=%s,%s;;tls;proto=h2", tmpConfig.remoteIp, tmpConfig.remotePort);
+
         Process process = runtime.exec(new String[]{
                 nghttpxCmd,
                 "-k",
@@ -493,7 +497,6 @@ public class MainActivity extends Activity implements
                 "--http2-proxy",
                 "--workers=4",
         });
-
 
         try {
             process.waitFor();
