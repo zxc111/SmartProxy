@@ -7,7 +7,7 @@ http2 proxy client for android
 简单粗暴将nghttpx打包进apk中
 
 #### 已知问题
-1. 要按保存+on才能开始运行。保存开启nghttpx转发，on开启vpnService截取包。
+~~1. 要按保存+on才能开始运行。保存开启nghttpx转发，on开启vpnService截取包。~~
 2. 性能略差。100k/s吧大概
 3. 切换配置麻烦
 4. 远端服务器暂时只支持ip
