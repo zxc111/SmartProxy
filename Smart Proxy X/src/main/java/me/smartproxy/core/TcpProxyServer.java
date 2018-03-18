@@ -103,9 +103,9 @@ public class TcpProxyServer implements Runnable {
 		short portKey=(short)localChannel.socket().getPort();
 		NatSession session =NatSessionManager.getSession(portKey);
 		if (session != null) {
-		    // ÅĞ¶ÏÊÇ·ñ×ß´úÀí
+		    // åˆ¤æ–­æ˜¯å¦èµ°ä»£ç†
 			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP) || !tmpConfig.bypass){
-				// nghttpx ÍùÔ¶¶Ë·¢²»×ß´úÀí
+				// nghttpx å¾€è¿œç«¯å‘ä¸èµ°ä»£ç†
 				if (session.RemoteHost.equals(tmpConfig.remoteIp)){
 					return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
 				}
@@ -114,7 +114,7 @@ public class TcpProxyServer implements Runnable {
 					System.out.printf("%d/%d:[PROXY] %s=>%s:%d\n",NatSessionManager.getSessionCount(), Tunnel.SessionCount,session.RemoteHost,CommonMethods.ipIntToString(session.RemoteIP),session.RemotePort&0xFFFF);
 				return InetSocketAddress.createUnresolved(session.RemoteHost, session.RemotePort&0xFFFF);
 			}else {
-			    // Ö±½Ó·ÅĞĞ
+			    // ç›´æ¥æ”¾è¡Œ
 			    return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
 			}
 		}
@@ -130,9 +130,9 @@ public class TcpProxyServer implements Runnable {
 			InetSocketAddress destAddress=getDestAddress(localChannel);
 			if(destAddress!=null){
 				Tunnel remoteTunnel=TunnelFactory.createTunnelByConfig(destAddress,m_Selector);
-				remoteTunnel.setBrotherTunnel(localTunnel);//¹ØÁªĞÖµÜ
-				localTunnel.setBrotherTunnel(remoteTunnel);//¹ØÁªĞÖµÜ
-				remoteTunnel.connect(destAddress);//¿ªÊ¼Á¬½Ó
+				remoteTunnel.setBrotherTunnel(localTunnel);//å…³è”å…„å¼Ÿ
+				localTunnel.setBrotherTunnel(remoteTunnel);//å…³è”å…„å¼Ÿ
+				remoteTunnel.connect(destAddress);//å¼€å§‹è¿æ¥
 			}
 			else {
 				LocalVpnService.Instance.writeLog("Error: socket(%s:%d) target host is null.",localChannel.socket().getInetAddress().toString(),localChannel.socket().getPort());
