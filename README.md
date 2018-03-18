@@ -2,7 +2,10 @@ SmartProxy
 ==========
 
 http2 proxy client for android
-服务器配合[nghttpx](https://github.com/nghttp2/nghttp2)食用。（自行编译）
+
+base on [https://github.com/oldman1977/SmartProxy](https://github.com/oldman1977/SmartProxy)
+
+服务器端配合[nghttpx](https://github.com/nghttp2/nghttp2)食用。（自行编译）
 
 简单粗暴将nghttpx打包进apk中
 
