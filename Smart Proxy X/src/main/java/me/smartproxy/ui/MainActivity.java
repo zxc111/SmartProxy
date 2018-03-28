@@ -89,25 +89,25 @@ public class MainActivity extends Activity implements
         String PortDb = readConfigKey(PortKey);
 
         if (TextUtils.isEmpty(UserNameFromDB)) {
-            UserNameField.setText("Please input username");
+            UserNameField.setText("user");
         } else {
             UserNameField.setText(UserNameFromDB);
             tmpConfig.UserName = UserNameFromDB;
         }
         if (TextUtils.isEmpty(PasswordDB)) {
-            PasswordField.setText("Please input password");
+            PasswordField.setText("password");
         } else {
             PasswordField.setText(PasswordDB);
             tmpConfig.Password = PasswordDB;
         }
         if (TextUtils.isEmpty(IpDB)) {
-            IpField.setText("Please input remote ip");
+            IpField.setText("remote_ip");
         } else {
             IpField.setText(IpDB);
             tmpConfig.remoteIp = IpDB;
         }
         if (TextUtils.isEmpty(PortDb)) {
-            PortField.setText("Please input remote port");
+            PortField.setText("remote_port");
         } else {
             PortField.setText(PortDb);
             tmpConfig.remotePort = PortDb;
@@ -298,39 +298,45 @@ public class MainActivity extends Activity implements
             switchProxy.setEnabled(false);
 
             if (isChecked) {
-                try {
-                    String filePath =  exe_path+"nghttpx";
-                    File f=new File(filePath);
-
-                    if(!f.exists())
-                    {
-                        copyBigDataToSD(filePath, "nghttpx");
-
-                    }
-                    // copyBigDataToSD(filePath, "nghttpx");
-                    exe_file = new File(filePath);
-                    exe_file.setExecutable(true, true);
-                    nghttpxCmd = exe_path+"nghttpx";
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                startNghttpx();
-                setBypass(); // 绕过国内
-                Intent intent = LocalVpnService.prepare(this);
-                if (intent == null) {
-                    startVPNService();
-                } else {
-                    startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
-                }
+                CopyAndStart();
+                startVpn();
             } else {
                 LocalVpnService.IsRunning = false;
             }
         }
     }
 
+    public void startVpn() {
+        Intent intent = LocalVpnService.prepare(this);
+        if (intent == null) {
+            startVPNService();
+        } else {
+            startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
+        }
+    }
+
     public void setBypass(){
         tmpConfig.bypass = byPass.isChecked();
+    }
+    public void CopyAndStart (){
+        try {
+            String filePath =  exe_path+"nghttpx";
+            File f=new File(filePath);
+
+            if(!f.exists())
+            {
+                copyDataToSD(filePath, "nghttpx");
+            }
+            // copyBigDataToSD(filePath, "nghttpx");
+            exe_file = new File(filePath);
+            exe_file.setExecutable(true, true);
+            nghttpxCmd = exe_path+"nghttpx";
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        startNghttpx();
+        setBypass(); // 绕过国内
     }
 
     private void startVPNService() {
@@ -468,7 +474,7 @@ public class MainActivity extends Activity implements
         super.onDestroy();
     }
 
-    private void copyBigDataToSD(String strOutFileName, String assertFileName) throws IOException
+    private void copyDataToSD(String strOutFileName, String assertFileName) throws IOException
     {
         InputStream myInput;
         OutputStream myOutput = new FileOutputStream(strOutFileName);
