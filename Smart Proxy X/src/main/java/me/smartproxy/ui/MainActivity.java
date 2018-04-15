@@ -42,12 +42,8 @@ public class MainActivity extends Activity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String CONFIG_URL_KEY = "CONFIG_URL_KEY";
 
-    final String UserKey = "UserNameKey";
-    final String PasswordKey = "PasswordKey";
-    final String IpKey = "IpKey";
-    final String PortKey = "PortKey";
+
     String nghttpxCmd = "";
 
     private String exe_path = "/data/data/me.smartproxy/";
@@ -83,10 +79,10 @@ public class MainActivity extends Activity implements
         final TextView IpField = (TextView) findViewById(R.id.remoteIp);
         final TextView PortField = (TextView) findViewById(R.id.remotePort);
 
-        String UserNameFromDB = readConfigKey(UserKey);
-        final String PasswordDB = readConfigKey(PasswordKey);
-        String IpDB = readConfigKey(IpKey);
-        String PortDb = readConfigKey(PortKey);
+        String UserNameFromDB = readConfigKey(tmpConfig.UserKey);
+        final String PasswordDB = readConfigKey(tmpConfig.PasswordKey);
+        String IpDB = readConfigKey(tmpConfig.IpKey);
+        String PortDb = readConfigKey(tmpConfig.PortKey);
 
         if (TextUtils.isEmpty(UserNameFromDB)) {
             UserNameField.setText("user");
@@ -118,16 +114,16 @@ public class MainActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 String UserName = (String) UserNameField.getText().toString();
-                setConfigKey(UserKey, UserName);
+                setConfigKey(tmpConfig.UserKey, UserName);
                 tmpConfig.UserName = UserName;
                 String Password = (String) PasswordField.getText().toString();
-                setConfigKey(PasswordKey, Password);
+                setConfigKey(tmpConfig.PasswordKey, Password);
                 tmpConfig.Password = Password;
                 String Ip = (String) IpField.getText().toString();
-                setConfigKey(IpKey, Ip);
+                setConfigKey(tmpConfig.IpKey, Ip);
                 tmpConfig.remoteIp = Ip;
                 String Port = (String) PortField.getText().toString();
-                setConfigKey(PortKey, Port);
+                setConfigKey(tmpConfig.PortKey, Port);
                 tmpConfig.remotePort = Port;
 
 
@@ -137,13 +133,13 @@ public class MainActivity extends Activity implements
 
     String readConfigUrl() {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
-        return preferences.getString(CONFIG_URL_KEY, "");
+        return preferences.getString(tmpConfig.CONFIG_URL_KEY, "");
     }
 
     void setConfigUrl(String configUrl) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         Editor editor = preferences.edit();
-        editor.putString(CONFIG_URL_KEY, configUrl);
+        editor.putString(tmpConfig.CONFIG_URL_KEY, configUrl);
         editor.commit();
     }
     String readConfigKey(String Key) {
@@ -174,26 +170,7 @@ public class MainActivity extends Activity implements
 
     boolean isValidUrl(String url) {
         try {
-            if (url == null || url.isEmpty())
-                return false;
-
-            if (url.startsWith("/")) {//file path
-                File file = new File(url);
-                if (!file.exists()) {
-                    onLogReceived(String.format("File(%s) not exists.", url));
-                    return false;
-                }
-                if (!file.canRead()) {
-                    onLogReceived(String.format("File(%s) can't read.", url));
-                    return false;
-                }
-            } else { //url
-                Uri uri = Uri.parse(url);
-                if (!"http".equals(uri.getScheme()) && !"https".equals(uri.getScheme()))
-                    return false;
-                if (uri.getHost() == null)
-                    return false;
-            }
+            // TODO clean this
             return true;
         } catch (Exception e) {
             return false;
@@ -389,10 +366,10 @@ public class MainActivity extends Activity implements
         super.onActivityResult(requestCode, resultCode, intent);
     }
     protected String getConfig(){
-        String username = readConfigKey(UserKey),
-                pwd = readConfigKey(PasswordKey),
-                ip = readConfigKey(IpKey),
-                port = readConfigKey(PortKey),
+        String username = readConfigKey(tmpConfig.UserKey),
+                pwd = readConfigKey(tmpConfig.PasswordKey),
+                ip = readConfigKey(tmpConfig.IpKey),
+                port = readConfigKey(tmpConfig.PortKey),
                 user_pwd = "";
 
 

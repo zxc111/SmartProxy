@@ -1,6 +1,8 @@
 package me.smartproxy.ui;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -10,7 +12,9 @@ import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.widget.Switch;
 
+import me.smartproxy.core.tmpConfig;
 import me.smartproxy.R;
+import me.smartproxy.core.LocalVpnService;
 
 /**
  * Created by3/27.
@@ -44,15 +48,18 @@ public class QuickSettingsService extends TileService{
             toggleState = STATE_OFF;
             icon =  Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
             getQsTile().setState(Tile.STATE_INACTIVE);// 更改成非活跃状态
-            switchProxy.setChecked(false);
-
+           // switchProxy.setChecked(false);
+            stopService(new Intent(this, LocalVpnService.class));
         } else {
             toggleState = STATE_ON;
             icon = Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
             getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
-            switchProxy.setChecked(true);
-
-
+            // switchProxy.setChecked(true);
+            // MainActivity aaa = new me.smartproxy.ui.MainActivity();
+            // String configUrl = aaa.getConfig();
+            String  configUrl = new tmpConfig().getConfig(this);
+            LocalVpnService.ConfigUrl = configUrl;
+            startService(new Intent(this, LocalVpnService.class));
         }
 
         getQsTile().setIcon(icon);//设置图标
@@ -72,11 +79,11 @@ public class QuickSettingsService extends TileService{
         Log.d(LOG_TAG, "onStopListening");
     }
 
-    public void setStateOn() {
-
-
+    /*public void setStateOn() {
+        String  config = new tmpConfig().getConfig(this);
+        System.out.println(config);
     }
     public void setStateOff() {
 
-    }
+    }*/
 }
