@@ -57,6 +57,7 @@ public class QuickSettingsService extends TileService{
             // switchProxy.setChecked(true);
             // MainActivity aaa = new me.smartproxy.ui.MainActivity();
             // String configUrl = aaa.getConfig();
+
             String  configUrl = new tmpConfig().getConfig(this);
             LocalVpnService.ConfigUrl = configUrl;
             startService(new Intent(this, LocalVpnService.class));
