@@ -42,13 +42,6 @@ public class MainActivity extends Activity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-
-
-    String nghttpxCmd = "";
-
-    private String exe_path = "/data/data/me.smartproxy/";
-    private File exe_file;
-
     private static final int START_VPN_SERVICE_REQUEST_CODE = 1985;
 
     private Switch switchProxy;
@@ -275,7 +268,7 @@ public class MainActivity extends Activity implements
             switchProxy.setEnabled(false);
 
             if (isChecked) {
-                CopyAndStart();
+                tmpConfig.CopyAndStart(this);
                 startVpn();
             } else {
                 LocalVpnService.IsRunning = false;
@@ -292,29 +285,7 @@ public class MainActivity extends Activity implements
         }
     }
 
-    public void setBypass(){
-        tmpConfig.bypass = byPass.isChecked();
-    }
-    public void CopyAndStart (){
-        try {
-            String filePath =  exe_path+"nghttpx";
-            File f=new File(filePath);
 
-            if(!f.exists())
-            {
-                copyDataToSD(filePath, "nghttpx");
-            }
-            // copyBigDataToSD(filePath, "nghttpx");
-            exe_file = new File(filePath);
-            exe_file.setExecutable(true, true);
-            nghttpxCmd = exe_path+"nghttpx";
-
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        startNghttpx();
-        setBypass(); // 绕过国内
-    }
 
     private void startVPNService() {
         //String configUrl = readConfigUrl();
@@ -451,65 +422,9 @@ public class MainActivity extends Activity implements
         super.onDestroy();
     }
 
-    private void copyDataToSD(String strOutFileName, String assertFileName) throws IOException
-    {
-        InputStream myInput;
-        OutputStream myOutput = new FileOutputStream(strOutFileName);
-        myInput = this.getAssets().open(assertFileName);
-        byte[] buffer = new byte[1024];
-        int length = myInput.read(buffer);
-        while(length > 0)
-        {
-            myOutput.write(buffer, 0, length);
-            length = myInput.read(buffer);
-        }
-        myOutput.flush();
-        myInput.close();
-        myOutput.close();
-    }
 
-    private void execCmd() throws IOException {
-        Runtime runtime = Runtime.getRuntime();
-        String backendConfig = String.format("--backend=%s,%s;;tls;proto=h2", tmpConfig.remoteIp, tmpConfig.remotePort);
 
-        Process process = runtime.exec(new String[]{
-                nghttpxCmd,
-                "-k",
-                "--frontend=0.0.0.0,9000;no-tls",
-                backendConfig,
-                "--http2-proxy",
-                "--workers=4",
-        });
 
-        try {
-            process.waitFor();
-            InputStream error = process.getErrorStream();
-            String err_msg = "";
 
-            for (int i = 0; i < 200; i++) {
-                err_msg += (char) error.read();
-            }
-            System.out.println(err_msg);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void startNghttpx(){
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    execCmd();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }
 
 }

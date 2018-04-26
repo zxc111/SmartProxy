@@ -54,10 +54,7 @@ public class QuickSettingsService extends TileService{
             toggleState = STATE_ON;
             icon = Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
             getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
-            // switchProxy.setChecked(true);
-            // MainActivity aaa = new me.smartproxy.ui.MainActivity();
-            // String configUrl = aaa.getConfig();
-
+            tmpConfig.CopyAndStart(this);
             String  configUrl = new tmpConfig().getConfig(this);
             LocalVpnService.ConfigUrl = configUrl;
             startService(new Intent(this, LocalVpnService.class));
