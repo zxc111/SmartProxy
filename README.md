@@ -1,5 +1,6 @@
 SmartProxy
 ==========
+[![Build Status](https://travis-ci.org/zxc111/SmartProxy.svg?branch=h2)](https://travis-ci.org/zxc111/SmartProxy)
 
 http2 proxy client for android
 
