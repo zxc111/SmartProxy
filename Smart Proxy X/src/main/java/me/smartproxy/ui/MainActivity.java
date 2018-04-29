@@ -289,7 +289,8 @@ public class MainActivity extends Activity implements
 
     private void startVPNService() {
         //String configUrl = readConfigUrl();
-        String configUrl = getConfig();
+        // String configUrl = getConfig();
+        String configUrl = tmpConfig.getConfig(this);
         if (!isValidUrl(configUrl)) {
             Toast.makeText(this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
             switchProxy.post(new Runnable() {
@@ -335,20 +336,6 @@ public class MainActivity extends Activity implements
         }
 
         super.onActivityResult(requestCode, resultCode, intent);
-    }
-    protected String getConfig(){
-        String username = readConfigKey(tmpConfig.UserKey),
-                pwd = readConfigKey(tmpConfig.PasswordKey),
-                ip = readConfigKey(tmpConfig.IpKey),
-                port = readConfigKey(tmpConfig.PortKey),
-                user_pwd = "";
-
-
-        if (!username.equals("")){
-            user_pwd = String.format("%s:%s@", username, pwd);
-        }
-        return String.format("http://%s%s:%s", user_pwd, ip, port);
-
     }
 
     @Override

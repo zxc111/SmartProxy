@@ -164,6 +164,7 @@ public class LocalVpnService extends VpnService implements Runnable {
 			ProxyConfig.AppInstallID=getAppInstallID();//获取安装ID
 			ProxyConfig.AppVersion=getVersionName();//获取版本号
 			System.out.printf("AppInstallID: %s\n", ProxyConfig.AppInstallID);
+
 			writeLog("Android version: %s", Build.VERSION.RELEASE);
 			writeLog("App version: %s", ProxyConfig.AppVersion);
 			
@@ -182,52 +183,61 @@ public class LocalVpnService extends VpnService implements Runnable {
 			while (true) {
 				if (IsRunning) {
 					//加载配置文件
+
 					writeLog("Load config from %s ...", ConfigUrl);
 					try {
+
 						ProxyConfig.Instance.loadFromUrl(ConfigUrl);
+
 						if(ProxyConfig.Instance.getDefaultProxy()==null){
+
 							throw new Exception("Invalid config file.");
 						}
 						writeLog("PROXY %s", ProxyConfig.Instance.getDefaultProxy());
 					} catch (Exception e) {
+
 						String errString=e.getMessage();
 						if(errString==null||errString.isEmpty()){
 							errString=e.toString();
 						}
+                        System.out.println(errString);
 						
 						IsRunning=false;
 						onStatusChanged(errString, false);
 						continue;
 					}
-					
-					
+
 					writeLog("Load config success.");
 					String welcomeInfoString=ProxyConfig.Instance.getWelcomeInfo();
 					if(welcomeInfoString!=null&&!welcomeInfoString.isEmpty()){
 						writeLog("%s", ProxyConfig.Instance.getWelcomeInfo());
 					}
- 
 					runVPN();
 				} else {
 					Thread.sleep(100);
 				}
 			}
 		} catch (InterruptedException e) {
+
 			System.out.println(e);
 		} catch (Exception e) {
+
 			e.printStackTrace();
 			writeLog("Fatal error: %s",e.toString());
 		} finally {
+
 			writeLog("SmartProxy terminated.");
 			dispose();
 		}
 	}
 
 	private void runVPN() throws Exception {
+
 		this.m_VPNInterface = establishVPN();
 		this.m_VPNOutputStream = new FileOutputStream(m_VPNInterface.getFileDescriptor());
 		FileInputStream in = new FileInputStream(m_VPNInterface.getFileDescriptor());
 		int size = 0;
+
 		while (size != -1 && IsRunning) {
 			while ((size = in.read(m_Packet)) > 0 && IsRunning) {
 				if(m_DnsProxy.Stopped||m_TcpProxyServer.Stopped){
@@ -326,8 +336,11 @@ public class LocalVpnService extends VpnService implements Runnable {
 	}
 
 	private ParcelFileDescriptor establishVPN() throws Exception {
+
 		Builder builder = new Builder();
+
 		builder.setMtu(ProxyConfig.Instance.getMTU());
+
 		if(ProxyConfig.IS_DEBUG)
 			System.out.printf("setMtu: %d\n", ProxyConfig.Instance.getMTU());
 		

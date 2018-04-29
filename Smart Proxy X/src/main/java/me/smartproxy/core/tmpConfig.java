@@ -36,13 +36,20 @@ public class tmpConfig {
     public static String exe_path = "/data/data/me.smartproxy/";
     public File exe_file;
 
-    public String getConfig(Context context){
-        String username = readConfigKey(UserKey, context),
-                pwd = readConfigKey(PasswordKey, context),
-                ip = readConfigKey(IpKey, context),
-                port = readConfigKey(PortKey, context),
-                user_pwd = "";
+    private static String username="", pwd="", ip="", port="";
 
+    private static void checkConfig(Context context) {
+        if (ip == "" || port == "") {
+            UserName = username = readConfigKey(UserKey, context);
+            Password = pwd = readConfigKey(PasswordKey, context);
+            remoteIp = ip = readConfigKey(IpKey, context);
+            remotePort = port = readConfigKey(PortKey, context);
+        }
+    }
+    public static String getConfig(Context context){
+
+        String user_pwd = "";
+        checkConfig(context);
         if (!username.equals("")){
             user_pwd = String.format("%s:%s@", username, pwd);
         }
@@ -50,13 +57,14 @@ public class tmpConfig {
 
     }
 
-    public String readConfigKey(String Key, Context context) {
+    public static String readConfigKey(String Key, Context context) {
         SharedPreferences preferences = context.getSharedPreferences("SmartProxy", MODE_PRIVATE);
         return preferences.getString(Key, "");
     }
 
     // TODO开启nghttpx放到这里
     public static void CopyAndStart(Context context){
+        checkConfig(context);
         try {
             String filePath =  tmpConfig.exe_path+"nghttpx";
             File f=new File(filePath);
@@ -94,7 +102,9 @@ public class tmpConfig {
 
     private static void execCmd() throws IOException {
         Runtime runtime = Runtime.getRuntime();
-        String backendConfig = String.format("--backend=%s,%s;;tls;proto=h2", tmpConfig.remoteIp, tmpConfig.remotePort);
+        String backendConfig = String.format("--backend=%s,%s;;tls;proto=h2", ip, port);
+
+        System.out.println(backendConfig);
 
         Process process = runtime.exec(new String[]{
                 tmpConfig.nghttpxCmd,
@@ -110,7 +120,7 @@ public class tmpConfig {
             InputStream error = process.getErrorStream();
             String err_msg = "";
 
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 2048; i++) {
                 err_msg += (char) error.read();
             }
             System.out.println(err_msg);
@@ -136,4 +146,5 @@ public class tmpConfig {
         myInput.close();
         myOutput.close();
     }
+
 }

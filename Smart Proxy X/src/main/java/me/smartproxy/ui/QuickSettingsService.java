@@ -28,6 +28,7 @@ public class QuickSettingsService extends TileService{
     private final int STATE_ON = 1;
     private final String LOG_TAG = "QuickSettingService";
     private int toggleState = STATE_OFF;
+    private static final Boolean isrunning = true;
 
     private Switch switchProxy;
     @Override
@@ -44,6 +45,7 @@ public class QuickSettingsService extends TileService{
     @Override
     public void onClick() {
         Icon icon;
+
         if (toggleState == STATE_ON) {
             toggleState = STATE_OFF;
             icon =  Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
@@ -60,11 +62,21 @@ public class QuickSettingsService extends TileService{
             // startService(new Intent(this, QuickSettingsService.class));
             icon = Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
             getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
-            tmpConfig.CopyAndStart(this);
-            String configUrl = new tmpConfig().getConfig(this);
-            LocalVpnService.ConfigUrl = configUrl;
 
-            startService(new Intent(this, LocalVpnService.class));
+            tmpConfig.CopyAndStart(this);
+            String configUrl = tmpConfig.getConfig(this);
+            System.out.println(configUrl);
+            LocalVpnService.ConfigUrl = configUrl;
+            LocalVpnService.IsRunning = true;
+
+            Intent intent = LocalVpnService.prepare(this);
+            if (intent == null) {
+                // startVPNService();
+                startService(new Intent(this, LocalVpnService.class));
+            } else {
+                // startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
+            }
+
         }
 
         getQsTile().setIcon(icon);//设置图标
@@ -91,4 +103,7 @@ public class QuickSettingsService extends TileService{
     public void setStateOff() {
 
     }*/
+    public void QSService() {
+        QuickSettingsService instance = this;
+    }
 }
