@@ -42,17 +42,6 @@ public class MainActivity extends Activity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String CONFIG_URL_KEY = "CONFIG_URL_KEY";
-
-    final String UserKey = "UserNameKey";
-    final String PasswordKey = "PasswordKey";
-    final String IpKey = "IpKey";
-    final String PortKey = "PortKey";
-    String nghttpxCmd = "";
-
-    private String exe_path = "/data/data/me.smartproxy/";
-    private File exe_file;
-
     private static final int START_VPN_SERVICE_REQUEST_CODE = 1985;
 
     private Switch switchProxy;
@@ -83,31 +72,31 @@ public class MainActivity extends Activity implements
         final TextView IpField = (TextView) findViewById(R.id.remoteIp);
         final TextView PortField = (TextView) findViewById(R.id.remotePort);
 
-        String UserNameFromDB = readConfigKey(UserKey);
-        final String PasswordDB = readConfigKey(PasswordKey);
-        String IpDB = readConfigKey(IpKey);
-        String PortDb = readConfigKey(PortKey);
+        String UserNameFromDB = readConfigKey(tmpConfig.UserKey);
+        final String PasswordDB = readConfigKey(tmpConfig.PasswordKey);
+        String IpDB = readConfigKey(tmpConfig.IpKey);
+        String PortDb = readConfigKey(tmpConfig.PortKey);
 
         if (TextUtils.isEmpty(UserNameFromDB)) {
-            UserNameField.setText("Please input username");
+            UserNameField.setText("user");
         } else {
             UserNameField.setText(UserNameFromDB);
             tmpConfig.UserName = UserNameFromDB;
         }
         if (TextUtils.isEmpty(PasswordDB)) {
-            PasswordField.setText("Please input password");
+            PasswordField.setText("password");
         } else {
             PasswordField.setText(PasswordDB);
             tmpConfig.Password = PasswordDB;
         }
         if (TextUtils.isEmpty(IpDB)) {
-            IpField.setText("Please input remote ip");
+            IpField.setText("remote_ip");
         } else {
             IpField.setText(IpDB);
             tmpConfig.remoteIp = IpDB;
         }
         if (TextUtils.isEmpty(PortDb)) {
-            PortField.setText("Please input remote port");
+            PortField.setText("remote_port");
         } else {
             PortField.setText(PortDb);
             tmpConfig.remotePort = PortDb;
@@ -118,16 +107,16 @@ public class MainActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 String UserName = (String) UserNameField.getText().toString();
-                setConfigKey(UserKey, UserName);
+                setConfigKey(tmpConfig.UserKey, UserName);
                 tmpConfig.UserName = UserName;
                 String Password = (String) PasswordField.getText().toString();
-                setConfigKey(PasswordKey, Password);
+                setConfigKey(tmpConfig.PasswordKey, Password);
                 tmpConfig.Password = Password;
                 String Ip = (String) IpField.getText().toString();
-                setConfigKey(IpKey, Ip);
+                setConfigKey(tmpConfig.IpKey, Ip);
                 tmpConfig.remoteIp = Ip;
                 String Port = (String) PortField.getText().toString();
-                setConfigKey(PortKey, Port);
+                setConfigKey(tmpConfig.PortKey, Port);
                 tmpConfig.remotePort = Port;
 
 
@@ -137,13 +126,13 @@ public class MainActivity extends Activity implements
 
     String readConfigUrl() {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
-        return preferences.getString(CONFIG_URL_KEY, "");
+        return preferences.getString(tmpConfig.CONFIG_URL_KEY, "");
     }
 
     void setConfigUrl(String configUrl) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         Editor editor = preferences.edit();
-        editor.putString(CONFIG_URL_KEY, configUrl);
+        editor.putString(tmpConfig.CONFIG_URL_KEY, configUrl);
         editor.commit();
     }
     String readConfigKey(String Key) {
@@ -174,26 +163,7 @@ public class MainActivity extends Activity implements
 
     boolean isValidUrl(String url) {
         try {
-            if (url == null || url.isEmpty())
-                return false;
-
-            if (url.startsWith("/")) {//file path
-                File file = new File(url);
-                if (!file.exists()) {
-                    onLogReceived(String.format("File(%s) not exists.", url));
-                    return false;
-                }
-                if (!file.canRead()) {
-                    onLogReceived(String.format("File(%s) can't read.", url));
-                    return false;
-                }
-            } else { //url
-                Uri uri = Uri.parse(url);
-                if (!"http".equals(uri.getScheme()) && !"https".equals(uri.getScheme()))
-                    return false;
-                if (uri.getHost() == null)
-                    return false;
-            }
+            // TODO clean this
             return true;
         } catch (Exception e) {
             return false;
@@ -298,44 +268,29 @@ public class MainActivity extends Activity implements
             switchProxy.setEnabled(false);
 
             if (isChecked) {
-                try {
-                    String filePath =  exe_path+"nghttpx";
-                    File f=new File(filePath);
-
-                    if(!f.exists())
-                    {
-                        copyBigDataToSD(filePath, "nghttpx");
-
-                    }
-                    // copyBigDataToSD(filePath, "nghttpx");
-                    exe_file = new File(filePath);
-                    exe_file.setExecutable(true, true);
-                    nghttpxCmd = exe_path+"nghttpx";
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                startNghttpx();
-                setBypass(); // 绕过国内
-                Intent intent = LocalVpnService.prepare(this);
-                if (intent == null) {
-                    startVPNService();
-                } else {
-                    startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
-                }
+                tmpConfig.CopyAndStart(this);
+                startVpn();
             } else {
                 LocalVpnService.IsRunning = false;
             }
         }
     }
 
-    public void setBypass(){
-        tmpConfig.bypass = byPass.isChecked();
+    public void startVpn() {
+        Intent intent = LocalVpnService.prepare(this);
+        if (intent == null) {
+            startVPNService();
+        } else {
+            startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
+        }
     }
+
+
 
     private void startVPNService() {
         //String configUrl = readConfigUrl();
-        String configUrl = getConfig();
+        // String configUrl = getConfig();
+        String configUrl = tmpConfig.getConfig(this);
         if (!isValidUrl(configUrl)) {
             Toast.makeText(this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
             switchProxy.post(new Runnable() {
@@ -381,20 +336,6 @@ public class MainActivity extends Activity implements
         }
 
         super.onActivityResult(requestCode, resultCode, intent);
-    }
-    protected String getConfig(){
-        String username = readConfigKey(UserKey),
-                pwd = readConfigKey(PasswordKey),
-                ip = readConfigKey(IpKey),
-                port = readConfigKey(PortKey),
-                user_pwd = "";
-
-
-        if (!username.equals("")){
-            user_pwd = String.format("%s:%s@", username, pwd);
-        }
-        return String.format("http://%s%s:%s", user_pwd, ip, port);
-
     }
 
     @Override
@@ -468,65 +409,9 @@ public class MainActivity extends Activity implements
         super.onDestroy();
     }
 
-    private void copyBigDataToSD(String strOutFileName, String assertFileName) throws IOException
-    {
-        InputStream myInput;
-        OutputStream myOutput = new FileOutputStream(strOutFileName);
-        myInput = this.getAssets().open(assertFileName);
-        byte[] buffer = new byte[1024];
-        int length = myInput.read(buffer);
-        while(length > 0)
-        {
-            myOutput.write(buffer, 0, length);
-            length = myInput.read(buffer);
-        }
-        myOutput.flush();
-        myInput.close();
-        myOutput.close();
-    }
 
-    private void execCmd() throws IOException {
-        Runtime runtime = Runtime.getRuntime();
-        String backendConfig = String.format("--backend=%s,%s;;tls;proto=h2", tmpConfig.remoteIp, tmpConfig.remotePort);
 
-        Process process = runtime.exec(new String[]{
-                nghttpxCmd,
-                "-k",
-                "--frontend=0.0.0.0,9000;no-tls",
-                backendConfig,
-                "--http2-proxy",
-                "--workers=4",
-        });
 
-        try {
-            process.waitFor();
-            InputStream error = process.getErrorStream();
-            String err_msg = "";
 
-            for (int i = 0; i < 200; i++) {
-                err_msg += (char) error.read();
-            }
-            System.out.println(err_msg);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void startNghttpx(){
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    execCmd();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }
 
 }

@@ -1,32 +1,37 @@
 buildscript {
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.2'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
-
+    jcenter()
+    google()
     maven {
         url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/"
     }
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 27
         versionCode 7
         versionName "1.6"
     }
 
+    lintOptions {
+        abortOnError false
+    }
     signingConfigs {
         release {
             storeFile file("[android.keystore]")
@@ -46,7 +51,7 @@ android {
 }
 
 dependencies {
-    compile 'com.embarkmobile:zxing-android-minimal:2.0.0@aar'
-    compile 'com.embarkmobile:zxing-android-integration:2.0.0@aar'
-    compile 'com.google.zxing:core:3.0.1'
+    api 'com.embarkmobile:zxing-android-minimal:2.0.0@aar'
+    api 'com.embarkmobile:zxing-android-integration:2.0.0@aar'
+    api 'com.google.zxing:core:3.0.1'
 }

@@ -1,5 +1,6 @@
 SmartProxy
 ==========
+[![Build Status](https://travis-ci.org/zxc111/SmartProxy.svg?branch=h2)](https://travis-ci.org/zxc111/SmartProxy)
 
 http2 proxy client for android
 
@@ -8,6 +9,10 @@ base on [https://github.com/oldman1977/SmartProxy](https://github.com/oldman1977
 服务器端配合[nghttpx](https://github.com/nghttp2/nghttp2)食用。（自行编译）
 
 简单粗暴将nghttpx打包进apk中
+
+ChangLog
+========
+1.增加通过 QuickSetting 启动
 
 #### 已知问题
 1. ~~要按保存+on才能开始运行。保存开启nghttpx转发，on开启vpnService截取包。~~
