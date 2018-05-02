@@ -23,15 +23,9 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import me.smartproxy.R;
 import me.smartproxy.core.LocalVpnService;
-import me.smartproxy.core.tmpConfig;
+import me.smartproxy.core.TmpConfig;
 
-import java.io.File;
 import java.util.Calendar;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class MainActivity extends Activity implements
         View.OnClickListener,
@@ -72,34 +66,34 @@ public class MainActivity extends Activity implements
         final TextView IpField = (TextView) findViewById(R.id.remoteIp);
         final TextView PortField = (TextView) findViewById(R.id.remotePort);
 
-        String UserNameFromDB = readConfigKey(tmpConfig.UserKey);
-        final String PasswordDB = readConfigKey(tmpConfig.PasswordKey);
-        String IpDB = readConfigKey(tmpConfig.IpKey);
-        String PortDb = readConfigKey(tmpConfig.PortKey);
+        String UserNameFromDB = readConfigKey(TmpConfig.UserKey);
+        final String PasswordDB = readConfigKey(TmpConfig.PasswordKey);
+        String IpDB = readConfigKey(TmpConfig.IpKey);
+        String PortDb = readConfigKey(TmpConfig.PortKey);
 
         if (TextUtils.isEmpty(UserNameFromDB)) {
             UserNameField.setText("user");
         } else {
             UserNameField.setText(UserNameFromDB);
-            tmpConfig.UserName = UserNameFromDB;
+            TmpConfig.UserName = UserNameFromDB;
         }
         if (TextUtils.isEmpty(PasswordDB)) {
             PasswordField.setText("password");
         } else {
             PasswordField.setText(PasswordDB);
-            tmpConfig.Password = PasswordDB;
+            TmpConfig.Password = PasswordDB;
         }
         if (TextUtils.isEmpty(IpDB)) {
             IpField.setText("remote_ip");
         } else {
             IpField.setText(IpDB);
-            tmpConfig.remoteIp = IpDB;
+            TmpConfig.remoteIp = IpDB;
         }
         if (TextUtils.isEmpty(PortDb)) {
             PortField.setText("remote_port");
         } else {
             PortField.setText(PortDb);
-            tmpConfig.remotePort = PortDb;
+            TmpConfig.remotePort = PortDb;
         }
 
         Button button= (Button) findViewById(R.id.confirm);
@@ -107,17 +101,17 @@ public class MainActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 String UserName = (String) UserNameField.getText().toString();
-                setConfigKey(tmpConfig.UserKey, UserName);
-                tmpConfig.UserName = UserName;
+                setConfigKey(TmpConfig.UserKey, UserName);
+                TmpConfig.UserName = UserName;
                 String Password = (String) PasswordField.getText().toString();
-                setConfigKey(tmpConfig.PasswordKey, Password);
-                tmpConfig.Password = Password;
+                setConfigKey(TmpConfig.PasswordKey, Password);
+                TmpConfig.Password = Password;
                 String Ip = (String) IpField.getText().toString();
-                setConfigKey(tmpConfig.IpKey, Ip);
-                tmpConfig.remoteIp = Ip;
+                setConfigKey(TmpConfig.IpKey, Ip);
+                TmpConfig.remoteIp = Ip;
                 String Port = (String) PortField.getText().toString();
-                setConfigKey(tmpConfig.PortKey, Port);
-                tmpConfig.remotePort = Port;
+                setConfigKey(TmpConfig.PortKey, Port);
+                TmpConfig.remotePort = Port;
 
 
             }
@@ -126,13 +120,13 @@ public class MainActivity extends Activity implements
 
     String readConfigUrl() {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
-        return preferences.getString(tmpConfig.CONFIG_URL_KEY, "");
+        return preferences.getString(TmpConfig.CONFIG_URL_KEY, "");
     }
 
     void setConfigUrl(String configUrl) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         Editor editor = preferences.edit();
-        editor.putString(tmpConfig.CONFIG_URL_KEY, configUrl);
+        editor.putString(TmpConfig.CONFIG_URL_KEY, configUrl);
         editor.commit();
     }
     String readConfigKey(String Key) {
@@ -268,7 +262,7 @@ public class MainActivity extends Activity implements
             switchProxy.setEnabled(false);
 
             if (isChecked) {
-                tmpConfig.CopyAndStart(this);
+                TmpConfig.CopyAndStart(this);
                 startVpn();
             } else {
                 LocalVpnService.IsRunning = false;
@@ -290,7 +284,7 @@ public class MainActivity extends Activity implements
     private void startVPNService() {
         //String configUrl = readConfigUrl();
         // String configUrl = getConfig();
-        String configUrl = tmpConfig.getConfig(this);
+        String configUrl = TmpConfig.getConfig(this);
         if (!isValidUrl(configUrl)) {
             Toast.makeText(this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
             switchProxy.post(new Runnable() {
@@ -408,10 +402,5 @@ public class MainActivity extends Activity implements
         LocalVpnService.removeOnStatusChangedListener(this);
         super.onDestroy();
     }
-
-
-
-
-
 
 }

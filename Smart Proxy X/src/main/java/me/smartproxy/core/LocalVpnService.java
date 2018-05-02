@@ -197,6 +197,7 @@ public class LocalVpnService extends VpnService implements Runnable {
 					} catch (Exception e) {
 
 						String errString=e.getMessage();
+						writeLog("Load config err %s", errString);
 						if(errString==null||errString.isEmpty()){
 							errString=e.toString();
 						}

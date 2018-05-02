@@ -3,15 +3,12 @@ package me.smartproxy.tunnel.httpconnect;
 import android.util.Base64;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.text.Bidi;
-import android.util.Base64;
+
 import me.smartproxy.core.ProxyConfig;
+import me.smartproxy.core.TmpConfig;
 import me.smartproxy.tunnel.Tunnel;
-import me.smartproxy.core.tmpConfig;
 
 public class HttpConnectTunnel extends Tunnel {
 
@@ -25,7 +22,7 @@ public class HttpConnectTunnel extends Tunnel {
 
 	@Override
 	protected void onConnected(ByteBuffer buffer) throws Exception {
-        String auth = String.format("%s:%s", tmpConfig.UserName, tmpConfig.Password);
+        String auth = String.format("%s:%s", TmpConfig.UserName, TmpConfig.Password);
         if (auth.equals("")){
             auth = "";
         } else {

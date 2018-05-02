@@ -2,16 +2,12 @@ package me.smartproxy.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.ContentProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import me.smartproxy.ui.MainActivity;
 
 import static android.app.PendingIntent.getActivity;
 import static android.content.Context.MODE_PRIVATE;
@@ -20,7 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by gho on 17-11-4.
  */
 
-public class tmpConfig {
+public class TmpConfig {
     public static String UserName, Password, remoteIp, remotePort;
     public static boolean bypass=true;
 
@@ -66,7 +62,7 @@ public class tmpConfig {
     public static void CopyAndStart(Context context){
         checkConfig(context);
         try {
-            String filePath =  tmpConfig.exe_path+"nghttpx";
+            String filePath =  TmpConfig.exe_path+"nghttpx";
             File f=new File(filePath);
 
             if(!f.exists())
@@ -76,7 +72,7 @@ public class tmpConfig {
             // copyBigDataToSD(filePath, "nghttpx");
             File exe_file = new File(filePath);
             exe_file.setExecutable(true, true);
-            nghttpxCmd = tmpConfig.exe_path+"nghttpx";
+            nghttpxCmd = TmpConfig.exe_path+"nghttpx";
 
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -96,8 +92,29 @@ public class tmpConfig {
                 }
             }
         };
-        Thread thread = new Thread(runnable);
+        final Thread thread = new Thread(runnable);
         thread.start();
+
+        Runnable stop = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (!LocalVpnService.IsRunning){
+                        if (thread.isAlive()) {
+                            thread.interrupt();
+                        }
+                        break;
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        final Thread stopThread = new Thread(stop);
+        stopThread.start();
     }
 
     private static void execCmd() throws IOException {
@@ -107,7 +124,7 @@ public class tmpConfig {
         System.out.println(backendConfig);
 
         Process process = runtime.exec(new String[]{
-                tmpConfig.nghttpxCmd,
+                TmpConfig.nghttpxCmd,
                 "-k",
                 "--frontend=0.0.0.0,9000;no-tls",
                 backendConfig,

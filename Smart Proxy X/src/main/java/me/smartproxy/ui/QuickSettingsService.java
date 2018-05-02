@@ -1,18 +1,15 @@
 package me.smartproxy.ui;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.os.IBinder;
 import android.service.quicksettings.TileService;
 import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.widget.Switch;
 
-import me.smartproxy.core.tmpConfig;
+import me.smartproxy.core.TmpConfig;
 import me.smartproxy.R;
 import me.smartproxy.core.LocalVpnService;
 
@@ -63,8 +60,8 @@ public class QuickSettingsService extends TileService{
             icon = Icon.createWithResource(getApplicationContext(), R.drawable.ic_launcher);
             getQsTile().setState(Tile.STATE_ACTIVE);//更改成活跃状态
 
-            tmpConfig.CopyAndStart(this);
-            String configUrl = tmpConfig.getConfig(this);
+            TmpConfig.CopyAndStart(this);
+            String configUrl = TmpConfig.getConfig(this);
             System.out.println(configUrl);
             LocalVpnService.ConfigUrl = configUrl;
             LocalVpnService.IsRunning = true;
@@ -97,7 +94,7 @@ public class QuickSettingsService extends TileService{
     }
 
     /*public void setStateOn() {
-        String  config = new tmpConfig().getConfig(this);
+        String  config = new TmpConfig().getConfig(this);
         System.out.println(config);
     }
     public void setStateOff() {
