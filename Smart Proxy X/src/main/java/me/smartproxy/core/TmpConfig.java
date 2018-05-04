@@ -58,7 +58,6 @@ public class TmpConfig {
         return preferences.getString(Key, "");
     }
 
-    // TODO开启nghttpx放到这里
     public static void CopyAndStart(Context context){
         checkConfig(context);
         try {
@@ -69,7 +68,6 @@ public class TmpConfig {
             {
                 copyDataToSD(filePath, "nghttpx", context);
             }
-            // copyBigDataToSD(filePath, "nghttpx");
             File exe_file = new File(filePath);
             exe_file.setExecutable(true, true);
             nghttpxCmd = TmpConfig.exe_path+"nghttpx";
@@ -95,7 +93,7 @@ public class TmpConfig {
         final Thread thread = new Thread(runnable);
         thread.start();
 
-        Runnable stop = new Runnable() {
+/*        Runnable stop = new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -114,7 +112,7 @@ public class TmpConfig {
             }
         };
         final Thread stopThread = new Thread(stop);
-        stopThread.start();
+        stopThread.start();*/
     }
 
     private static void execCmd() throws IOException {
