@@ -180,7 +180,6 @@ public class MainActivity extends Activity implements
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
                             case 0:
-                                scanForConfigUrl();
                                 break;
                             case 1:
                                 showConfigUrlInputDialog();
@@ -189,13 +188,6 @@ public class MainActivity extends Activity implements
                     }
                 })
                 .show();
-    }
-
-    private void scanForConfigUrl() {
-        new IntentIntegrator(this)
-                .setResultDisplayDuration(0)
-                .setPrompt(getString(R.string.config_url_scan_hint))
-                .initiateScan(IntentIntegrator.QR_CODE_TYPES);
     }
 
     private void showConfigUrlInputDialog() {
@@ -282,8 +274,6 @@ public class MainActivity extends Activity implements
 
 
     private void startVPNService() {
-        //String configUrl = readConfigUrl();
-        // String configUrl = getConfig();
         String configUrl = TmpConfig.getConfig(this);
         if (!isValidUrl(configUrl)) {
             Toast.makeText(this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
@@ -363,7 +353,7 @@ public class MainActivity extends Activity implements
                         .setNegativeButton(R.string.btn_more, new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://smartproxy.me")));
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/zxc111/SmartProxy")));
                             }
                         })
                         .show();
