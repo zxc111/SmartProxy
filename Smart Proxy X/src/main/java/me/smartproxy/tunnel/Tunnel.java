@@ -14,7 +14,7 @@ import me.smartproxy.core.ProxyConfig;
 
 public abstract class Tunnel {
 
-	final static ByteBuffer GL_BUFFER=ByteBuffer.allocate(20000);
+	final static ByteBuffer GL_BUFFER=ByteBuffer.allocate(1024*1024);
 	public static long SessionCount;
  
     protected abstract void onConnected(ByteBuffer buffer) throws Exception;
