@@ -57,7 +57,7 @@ public class LocalVpnService extends VpnService implements Runnable {
 	
 	public LocalVpnService() {
 		ID++;
-		m_Handler=new Handler();
+		m_Handler = new Handler();
 		m_Packet = new byte[1024*256];
 		m_IPHeader = new IPHeader(m_Packet, 0);
 		m_TCPHeader=new TCPHeader(m_Packet, 20);

@@ -127,7 +127,8 @@ public class TmpConfig {
                 "--frontend=0.0.0.0,9000;no-tls",
                 backendConfig,
                 "--http2-proxy",
-                "--workers=8",
+                "--workers=4",
+                "--backend-http2-window-size=524288",
         });
 
         try {
