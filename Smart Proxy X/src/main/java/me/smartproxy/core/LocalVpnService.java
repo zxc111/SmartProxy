@@ -57,8 +57,8 @@ public class LocalVpnService extends VpnService implements Runnable {
 	
 	public LocalVpnService() {
 		ID++;
-		m_Handler=new Handler();
-		m_Packet = new byte[20000];
+		m_Handler = new Handler();
+		m_Packet = new byte[1024*256];
 		m_IPHeader = new IPHeader(m_Packet, 0);
 		m_TCPHeader=new TCPHeader(m_Packet, 20);
 		m_UDPHeader=new UDPHeader(m_Packet, 20);
@@ -197,6 +197,7 @@ public class LocalVpnService extends VpnService implements Runnable {
 					} catch (Exception e) {
 
 						String errString=e.getMessage();
+						writeLog("Load config err %s", errString);
 						if(errString==null||errString.isEmpty()){
 							errString=e.toString();
 						}

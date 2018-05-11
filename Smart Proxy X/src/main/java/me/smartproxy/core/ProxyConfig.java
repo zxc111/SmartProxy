@@ -17,7 +17,6 @@ import me.smartproxy.tcpip.CommonMethods;
 import me.smartproxy.tunnel.Config;
 import me.smartproxy.tunnel.httpconnect.HttpConnectConfig;
 import me.smartproxy.tunnel.shadowsocks.ShadowsocksConfig;
-import me.smartproxy.core.tmpConfig;
 
 public class ProxyConfig {
 	public static final ProxyConfig Instance=new ProxyConfig();
@@ -236,10 +235,10 @@ public class ProxyConfig {
             
             String configString=EntityUtils.toString(response.getEntity(),"UTF-8");*/
             String user_pwd = "";
-			if (!tmpConfig.UserName.equals("")){
-				user_pwd = String.format("%s:%s@", tmpConfig.UserName, tmpConfig.Password);
+			if (!TmpConfig.UserName.equals("")){
+				user_pwd = String.format("%s:%s@", TmpConfig.UserName, TmpConfig.Password);
 			}
-            //String configString = String.format("proxy http://%s%s:%s", user_pwd, tmpConfig.remoteIp, tmpConfig.remotePort);
+            //String configString = String.format("proxy http://%s%s:%s", user_pwd, TmpConfig.remoteIp, TmpConfig.remotePort);
             String configString = String.format("proxy http://%s127.0.0.1:9000", user_pwd);
             String[] lines=configString.split("\\n");
             return lines;

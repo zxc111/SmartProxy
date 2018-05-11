@@ -3,15 +3,12 @@ package me.smartproxy.tunnel.httpconnect;
 import android.util.Base64;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.text.Bidi;
-import android.util.Base64;
+
 import me.smartproxy.core.ProxyConfig;
+import me.smartproxy.core.TmpConfig;
 import me.smartproxy.tunnel.Tunnel;
-import me.smartproxy.core.tmpConfig;
 
 public class HttpConnectTunnel extends Tunnel {
 
@@ -25,7 +22,7 @@ public class HttpConnectTunnel extends Tunnel {
 
 	@Override
 	protected void onConnected(ByteBuffer buffer) throws Exception {
-        String auth = String.format("%s:%s", tmpConfig.UserName, tmpConfig.Password);
+        String auth = String.format("%s:%s", TmpConfig.UserName, TmpConfig.Password);
         if (auth.equals("")){
             auth = "";
         } else {
@@ -55,7 +52,7 @@ public class HttpConnectTunnel extends Tunnel {
 
 	void trySendPartOfHeader(ByteBuffer buffer)  throws Exception {
 		int bytesSent=0;
-		int _size = 1024;
+		int _size = 1024*64;
 		if(buffer.remaining()>_size){
 			int pos=buffer.position()+buffer.arrayOffset();
     		String firString=new String(buffer.array(),pos,_size).toUpperCase();
@@ -67,17 +64,6 @@ public class HttpConnectTunnel extends Tunnel {
 			buffer.limit(limit);
 			if(ProxyConfig.IS_DEBUG)
 				System.out.printf("Send %d bytes(%s) to %s\n",bytesSent,firString,m_DestAddress);
-    		/*if(firString.startsWith("GET /") || firString.startsWith("POST /")){
-    			int limit=buffer.limit();
-    			buffer.limit(buffer.position()+_size);
-    			super.write(buffer,false);
-    			bytesSent=_size-buffer.remaining();
-    			buffer.limit(limit);
-    			if(ProxyConfig.IS_DEBUG)
-    				System.out.printf("Send %d bytes(%s) to %s\n",bytesSent,firString,m_DestAddress);
-    		} else {
-    			System.out.printf("debug: %s\n", firString);
-			}*/
 		}
 	}
 	
@@ -96,7 +82,7 @@ public class HttpConnectTunnel extends Tunnel {
 			//分析响应并判断是否连接成功
 			String response=new String(buffer.array(),buffer.position(),12);
 			System.out.println(response);
-			// if(response.matches("^HTTP/1.[01] 200$")||response.matches("^HTTP/1.[01] 403$")){
+
 			if(response.matches("^HTTP/1.[01] [0-9]+$")) {
 				buffer.limit(buffer.position());
 			}else {

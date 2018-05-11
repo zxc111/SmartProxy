@@ -9,12 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 import me.smartproxy.tcpip.CommonMethods;
-import me.smartproxy.tunnel.Config;
-import me.smartproxy.tunnel.RawTunnel;
 import me.smartproxy.tunnel.Tunnel;
-import me.smartproxy.tunnel.httpconnect.HttpConnectConfig;
-import me.smartproxy.tunnel.shadowsocks.ShadowsocksConfig;
-import me.smartproxy.core.tmpConfig;
 
 public class TcpProxyServer implements Runnable {
 
@@ -104,9 +99,9 @@ public class TcpProxyServer implements Runnable {
 		NatSession session =NatSessionManager.getSession(portKey);
 		if (session != null) {
 		    // 判断是否走代理
-			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP) || !tmpConfig.bypass){
+			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP) || !TmpConfig.bypass){
 				// nghttpx 往远端发不走代理
-				if (session.RemoteHost.equals(tmpConfig.remoteIp)){
+				if (session.RemoteHost.equals(TmpConfig.remoteIp)){
 					return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
 				}
 
