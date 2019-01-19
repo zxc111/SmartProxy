@@ -18,21 +18,21 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TmpConfig {
     public static String UserName, Password, remoteIp, remotePort;
-    public static boolean bypass=true;
+    public static boolean bypass = true; // 是否绕过国内
 
     public static final String UserKey = "UserNameKey";
     public static final String PasswordKey = "PasswordKey";
     public static final String IpKey = "IpKey";
     public static final String PortKey = "PortKey";
+    public static final String ByPass = "ByPass";
 
     public static final String CONFIG_URL_KEY = "CONFIG_URL_KEY";
 
     public static String nghttpxCmd = "";
 
     public static String exe_path = "/data/data/me.smartproxy/";
-    public File exe_file;
 
-    private static String username="", pwd="", ip="", port="";
+    private static String username = "", pwd = "", ip = "", port = "";
 
     private static void checkConfig(Context context) {
         if (ip == "" || port == "") {
@@ -40,13 +40,19 @@ public class TmpConfig {
             Password = pwd = readConfigKey(PasswordKey, context);
             remoteIp = ip = readConfigKey(IpKey, context);
             remotePort = port = readConfigKey(PortKey, context);
+            if (readConfigKey(ByPass, context) == "true") {
+                bypass = true;
+            } else {
+                bypass = false;
+            }
         }
     }
-    public static String getConfig(Context context){
+
+    public static String getConfig(Context context) {
 
         String user_pwd = "";
         checkConfig(context);
-        if (!username.equals("")){
+        if (!username.equals("")) {
             user_pwd = String.format("%s:%s@", username, pwd);
         }
         return String.format("http://%s%s:%s", user_pwd, ip, port);
@@ -58,28 +64,27 @@ public class TmpConfig {
         return preferences.getString(Key, "");
     }
 
-    public static void CopyAndStart(Context context){
+    public static void CopyAndStart(Context context) {
         checkConfig(context);
         try {
-            String filePath =  TmpConfig.exe_path+"nghttpx";
-            File f=new File(filePath);
+            String filePath = TmpConfig.exe_path + "nghttpx";
+            File f = new File(filePath);
 
-            if(!f.exists())
-            {
+            if (!f.exists()) {
                 copyDataToSD(filePath, "nghttpx", context);
             }
             File exe_file = new File(filePath);
             exe_file.setExecutable(true, true);
-            nghttpxCmd = TmpConfig.exe_path+"nghttpx";
+            nghttpxCmd = TmpConfig.exe_path + "nghttpx";
 
         } catch (IOException e1) {
             e1.printStackTrace();
         }
         startNghttpx();
-        //setBypass(); // 绕过国内
+//        setBypass(); // 绕过国内
     }
 
-    public static void startNghttpx(){
+    public static void startNghttpx() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -146,15 +151,14 @@ public class TmpConfig {
         }
 
     }
-    private static void copyDataToSD(String strOutFileName, String assertFileName, Context context) throws IOException
-    {
+
+    private static void copyDataToSD(String strOutFileName, String assertFileName, Context context) throws IOException {
         InputStream myInput;
         OutputStream myOutput = new FileOutputStream(strOutFileName);
         myInput = context.getAssets().open(assertFileName);
         byte[] buffer = new byte[1024];
         int length = myInput.read(buffer);
-        while(length > 0)
-        {
+        while (length > 0) {
             myOutput.write(buffer, 0, length);
             length = myInput.read(buffer);
         }

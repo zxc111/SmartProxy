@@ -10,7 +10,7 @@ base on [https://github.com/oldman1977/SmartProxy](https://github.com/oldman1977
 
 简单粗暴将nghttpx打包进apk中
 
-#### ChangLog
+#### ChangeLog
 
 1. 增加通过 QuickSetting 启动
 2. 调整nghttpx的参数，提升传输效率
