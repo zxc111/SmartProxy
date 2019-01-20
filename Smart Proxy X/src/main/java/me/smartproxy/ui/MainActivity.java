@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements
 
         byPass = (CheckBox) findViewById(R.id.bypassChina);
 
+//        TmpConfig.bypass = byPass.isChecked();
+
         final TextView UserNameField = (TextView) findViewById(R.id.UserName);
         final TextView PasswordField = (TextView) findViewById(R.id.Password);
         final TextView IpField = (TextView) findViewById(R.id.remoteIp);
@@ -71,15 +73,11 @@ public class MainActivity extends Activity implements
         String IpDB = readConfigKey(TmpConfig.IpKey);
         String PortDb = readConfigKey(TmpConfig.PortKey);
 
-        if (TextUtils.isEmpty(UserNameFromDB)) {
-            UserNameField.setText("user");
-        } else {
+        if (TextUtils.isEmpty(UserNameFromDB) == false) {
             UserNameField.setText(UserNameFromDB);
             TmpConfig.UserName = UserNameFromDB;
         }
-        if (TextUtils.isEmpty(PasswordDB)) {
-            PasswordField.setText("password");
-        } else {
+        if (TextUtils.isEmpty(PasswordDB) == false)  {
             PasswordField.setText(PasswordDB);
             TmpConfig.Password = PasswordDB;
         }
@@ -112,8 +110,14 @@ public class MainActivity extends Activity implements
                 String Port = (String) PortField.getText().toString();
                 setConfigKey(TmpConfig.PortKey, Port);
                 TmpConfig.remotePort = Port;
+                boolean bypass = (boolean) byPass.isChecked();
 
-
+                if (bypass) {
+                    setConfigKey(TmpConfig.ByPass, "true");
+                } else {
+                    setConfigKey(TmpConfig.ByPass, "false");
+                }
+                TmpConfig.remotePort = Port;
             }
         });
     }
@@ -133,9 +137,10 @@ public class MainActivity extends Activity implements
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         return preferences.getString(Key, "");
     }
-    void setConfigKey(String Key, String Value) {
+    public void setConfigKey(String Key, String Value) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         Editor editor = preferences.edit();
+
         editor.putString(Key, Value);
         editor.commit();
     }
@@ -270,8 +275,6 @@ public class MainActivity extends Activity implements
             startActivityForResult(intent, START_VPN_SERVICE_REQUEST_CODE);
         }
     }
-
-
 
     private void startVPNService() {
         String configUrl = TmpConfig.getConfig(this);
