@@ -19,8 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
 import me.smartproxy.R;
 import me.smartproxy.core.LocalVpnService;
 import me.smartproxy.core.TmpConfig;
@@ -69,15 +71,17 @@ public class MainActivity extends Activity implements
         final TextView PortField = (TextView) findViewById(R.id.remotePort);
 
         String UserNameFromDB = readConfigKey(TmpConfig.UserKey);
-        final String PasswordDB = readConfigKey(TmpConfig.PasswordKey);
+        String PasswordDB = readConfigKey(TmpConfig.PasswordKey);
         String IpDB = readConfigKey(TmpConfig.IpKey);
-        String PortDb = readConfigKey(TmpConfig.PortKey);
+        String PortDB = readConfigKey(TmpConfig.PortKey);
+        String ByPassDB = readConfigKey(TmpConfig.ByPassKey);
+
 
         if (TextUtils.isEmpty(UserNameFromDB) == false) {
             UserNameField.setText(UserNameFromDB);
             TmpConfig.UserName = UserNameFromDB;
         }
-        if (TextUtils.isEmpty(PasswordDB) == false)  {
+        if (TextUtils.isEmpty(PasswordDB) == false) {
             PasswordField.setText(PasswordDB);
             TmpConfig.Password = PasswordDB;
         }
@@ -87,14 +91,22 @@ public class MainActivity extends Activity implements
             IpField.setText(IpDB);
             TmpConfig.remoteIp = IpDB;
         }
-        if (TextUtils.isEmpty(PortDb)) {
+        if (TextUtils.isEmpty(PortDB)) {
             PortField.setText("remote_port");
         } else {
-            PortField.setText(PortDb);
-            TmpConfig.remotePort = PortDb;
+            PortField.setText(PortDB);
+            TmpConfig.remotePort = PortDB;
         }
 
-        Button button= (Button) findViewById(R.id.confirm);
+        if (ByPassDB.equals("true")) {
+            TmpConfig.bypass = true;
+        } else {
+            TmpConfig.bypass = false;
+        }
+        byPass.setChecked(TmpConfig.bypass);
+
+
+        Button button = (Button) findViewById(R.id.confirm);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,10 +125,11 @@ public class MainActivity extends Activity implements
                 boolean bypass = (boolean) byPass.isChecked();
 
                 if (bypass) {
-                    setConfigKey(TmpConfig.ByPass, "true");
+                    setConfigKey(TmpConfig.ByPassKey, "true");
                 } else {
-                    setConfigKey(TmpConfig.ByPass, "false");
+                    setConfigKey(TmpConfig.ByPassKey, "false");
                 }
+                TmpConfig.bypass = bypass;
                 TmpConfig.remotePort = Port;
             }
         });
@@ -133,10 +146,12 @@ public class MainActivity extends Activity implements
         editor.putString(TmpConfig.CONFIG_URL_KEY, configUrl);
         editor.commit();
     }
+
     String readConfigKey(String Key) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         return preferences.getString(Key, "");
     }
+
     public void setConfigKey(String Key, String Value) {
         SharedPreferences preferences = getSharedPreferences("SmartProxy", MODE_PRIVATE);
         Editor editor = preferences.edit();
