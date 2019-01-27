@@ -24,7 +24,7 @@ public class TmpConfig {
     public static final String PasswordKey = "PasswordKey";
     public static final String IpKey = "IpKey";
     public static final String PortKey = "PortKey";
-    public static final String ByPass = "ByPass";
+    public static final String ByPassKey = "ByPass";
 
     public static final String CONFIG_URL_KEY = "CONFIG_URL_KEY";
 
@@ -35,16 +35,14 @@ public class TmpConfig {
     private static String username = "", pwd = "", ip = "", port = "";
 
     private static void checkConfig(Context context) {
-        if (ip == "" || port == "") {
-            UserName = username = readConfigKey(UserKey, context);
-            Password = pwd = readConfigKey(PasswordKey, context);
-            remoteIp = ip = readConfigKey(IpKey, context);
-            remotePort = port = readConfigKey(PortKey, context);
-            if (readConfigKey(ByPass, context) == "true") {
-                bypass = true;
-            } else {
-                bypass = false;
-            }
+        UserName = username = readConfigKey(UserKey, context);
+        Password = pwd = readConfigKey(PasswordKey, context);
+        remoteIp = ip = readConfigKey(IpKey, context);
+        remotePort = port = readConfigKey(PortKey, context);
+        if (readConfigKey(ByPassKey, context).equals("true")) {
+            bypass = true;
+        } else {
+            bypass = false;
         }
     }
 
