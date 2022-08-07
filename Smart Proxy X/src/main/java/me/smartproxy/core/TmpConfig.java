@@ -30,7 +30,7 @@ public class TmpConfig {
 
     public static String nghttpxCmd = "";
 
-    public static String exe_path = "/data/data/me.smartproxy/";
+//    public static String exePath = "/data/data/me.smartproxy/";
 
     private static String username = "", pwd = "", ip = "", port = "";
 
@@ -65,16 +65,17 @@ public class TmpConfig {
     public static void CopyAndStart(Context context) {
         checkConfig(context);
         try {
-            String filePath = TmpConfig.exe_path + "nghttpx";
+            String filePath = context.getFilesDir().getPath() + "libnghttpx.so";
+            System.out.println(filePath);
             File f = new File(filePath);
 
             if (!f.exists()) {
-                copyDataToSD(filePath, "nghttpx", context);
+                copyDataToSD(filePath, "libnghttpx.so", context);
             }
-            File exe_file = new File(filePath);
-            exe_file.setExecutable(true, true);
-            nghttpxCmd = TmpConfig.exe_path + "nghttpx";
+            File exeFile = new File(filePath);
+            exeFile.setExecutable(true, true);
 
+            nghttpxCmd = context.getApplicationInfo().nativeLibraryDir + "/libnghttpx.so";
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -90,6 +91,7 @@ public class TmpConfig {
                     execCmd();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    LocalVpnService.Instance.writeLog(e.toString());
                 }
             }
         };

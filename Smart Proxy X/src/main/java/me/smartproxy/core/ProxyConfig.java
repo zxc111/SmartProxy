@@ -176,7 +176,7 @@ public class ProxyConfig {
         if (m_mtu > 1400 && m_mtu <= 20000) {
             return m_mtu;
         } else {
-            return 20000;
+            return 1400;
         }
     }
 

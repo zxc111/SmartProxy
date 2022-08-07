@@ -52,6 +52,7 @@ public class DnsProxy implements Runnable {
 		m_ReceivedThread = new Thread(this);
 		m_ReceivedThread.setName("DnsProxyThread");
 		m_ReceivedThread.start();
+		System.out.println("dns server start");
 	}
 	
 	public void stop(){
@@ -64,6 +65,8 @@ public class DnsProxy implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("dns server run");
+
 		try {
 			byte[] RECEIVE_BUFFER = new byte[2000];
 			IPHeader ipHeader=new IPHeader(RECEIVE_BUFFER, 0);
@@ -77,16 +80,19 @@ public class DnsProxy implements Runnable {
 			DatagramPacket packet = new DatagramPacket(RECEIVE_BUFFER,28, RECEIVE_BUFFER.length-28);
 	    
 			while (m_Client!=null&&!m_Client.isClosed()){
-				
+				System.out.println("123123123");
+
 				packet.setLength(RECEIVE_BUFFER.length-28);
 				m_Client.receive(packet);
-				
+				System.out.println("111 start");
+
 				dnsBuffer.clear();
 				dnsBuffer.limit(packet.getLength());
 				try {
 					DnsPacket dnsPacket=DnsPacket.FromBytes(dnsBuffer);
 					if(dnsPacket!=null){
 						OnDnsResponseReceived(ipHeader,udpHeader,dnsPacket);
+						System.out.println("111 stop");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -260,7 +266,9 @@ public class DnsProxy implements Runnable {
 
 			try {
 				if(LocalVpnService.Instance.protect(m_Client)){
+					System.out.println("111 send");
 					m_Client.send(packet);
+					System.out.println("111 send end");
 				}else {
 					System.err.println("VPN protect udp socket failed.");
 				}

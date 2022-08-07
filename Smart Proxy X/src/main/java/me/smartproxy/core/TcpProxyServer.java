@@ -1,6 +1,8 @@
 package me.smartproxy.core;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -24,10 +26,12 @@ public class TcpProxyServer implements Runnable {
 		m_Selector = Selector.open();
 		m_ServerSocketChannel = ServerSocketChannel.open();
 		m_ServerSocketChannel.configureBlocking(false);
-		m_ServerSocketChannel.socket().bind(new InetSocketAddress(port));
+		InetSocketAddress addr = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
+		m_ServerSocketChannel.socket().bind(addr);
 		m_ServerSocketChannel.register(m_Selector, SelectionKey.OP_ACCEPT);
 		this.Port=(short) m_ServerSocketChannel.socket().getLocalPort();
 		System.out.printf("AsyncTcpServer listen on %d success.\n", this.Port&0xFFFF);
+		System.out.println(m_ServerSocketChannel.getLocalAddress());
 	}
 	
 	public void start(){
@@ -100,7 +104,7 @@ public class TcpProxyServer implements Runnable {
 		if (session != null) {
 		    // 判断是否走代理
 			if(ProxyConfig.Instance.needProxy(session.RemoteHost, session.RemoteIP) || !TmpConfig.bypass){
-				// nghttpx 往远端发不走代理
+				// libnghttpx.so 往远端发不走代理
 				if (session.RemoteHost.equals(TmpConfig.remoteIp)){
 					return new InetSocketAddress(localChannel.socket().getInetAddress(),session.RemotePort&0xFFFF);
 				}

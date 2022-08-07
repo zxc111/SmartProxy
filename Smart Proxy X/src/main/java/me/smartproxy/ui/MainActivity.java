@@ -20,9 +20,6 @@ import android.view.View;
 import android.widget.*;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
 import me.smartproxy.R;
 import me.smartproxy.core.LocalVpnService;
 import me.smartproxy.core.TmpConfig;
@@ -321,18 +318,6 @@ public class MainActivity extends Activity implements
                 switchProxy.setChecked(false);
                 switchProxy.setEnabled(true);
                 onLogReceived("canceled.");
-            }
-            return;
-        }
-
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            String configUrl = scanResult.getContents();
-            if (isValidUrl(configUrl)) {
-                setConfigUrl(configUrl);
-                textViewConfigUrl.setText(configUrl);
-            } else {
-                Toast.makeText(MainActivity.this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
             }
             return;
         }

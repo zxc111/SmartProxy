@@ -16,15 +16,18 @@ repositories {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '28.0.2'
+//    buildToolsVersion '30.0.2'
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 7
         versionName "1.6"
-    }
 
+        ndk {
+            abiFilters 'armeabi', 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
 
     lintOptions {
         abortOnError false
@@ -48,7 +51,7 @@ android {
 }
 
 dependencies {
-    api 'com.embarkmobile:zxing-android-minimal:3.5.0@aar'
-    api 'com.embarkmobile:zxing-android-integration:3.5.0@aar'
-    api 'com.google.zxing:core:3.5.0'
+//    api 'com.embarkmobile:zxing-android-minimal:3.5.0@aar'
+//    api 'com.embarkmobile:zxing-android-integration:3.5.0@aar'
+//    api 'com.google.zxing:core:3.5.0'
 }
