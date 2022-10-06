@@ -80,11 +80,8 @@ public class DnsProxy implements Runnable {
 			DatagramPacket packet = new DatagramPacket(RECEIVE_BUFFER,28, RECEIVE_BUFFER.length-28);
 	    
 			while (m_Client!=null&&!m_Client.isClosed()){
-				System.out.println("123123123");
-
 				packet.setLength(RECEIVE_BUFFER.length-28);
 				m_Client.receive(packet);
-				System.out.println("111 start");
 
 				dnsBuffer.clear();
 				dnsBuffer.limit(packet.getLength());
@@ -92,7 +89,6 @@ public class DnsProxy implements Runnable {
 					DnsPacket dnsPacket=DnsPacket.FromBytes(dnsBuffer);
 					if(dnsPacket!=null){
 						OnDnsResponseReceived(ipHeader,udpHeader,dnsPacket);
-						System.out.println("111 stop");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

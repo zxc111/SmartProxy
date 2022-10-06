@@ -361,8 +361,20 @@ public class LocalVpnService extends VpnService implements Runnable {
         IPAddress ipAddress = ProxyConfig.Instance.getDefaultLocalIP();
         LOCAL_IP = CommonMethods.ipStringToInt(ipAddress.Address);
         builder.addAddress(ipAddress.Address, ipAddress.PrefixLength);
-		builder.addAllowedApplication("me.smartproxy");
-        builder.addAllowedApplication("com.android.chrome");
+//		builder.addAllowedApplication("me.smartproxy");
+//        builder.addAllowedApplication("com.android.chrome");
+//        builder.addAllowedApplication("com.bybit.app");
+//        builder.addAllowedApplication("com.android.vending");
+        builder.addDisallowedApplication("com.larksuite.suite");
+        builder.addDisallowedApplication("com.tencent.mm");
+        builder.addDnsServer("223.5.5.5");
+        builder.addDnsServer("114.114.114.114");
+        builder.addDnsServer("208.67.222.222");
+        builder.addDnsServer("208.67.220.220");
+
+//        builder.addDisallowedApplication("com.larksuite.suite");
+//        builder.addDisallowedApplication("com.tencent.mm");
+
         if (ProxyConfig.IS_DEBUG)
             System.out.printf("addAddress: %s/%d\n", ipAddress.Address, ipAddress.PrefixLength);
 

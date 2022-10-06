@@ -199,21 +199,23 @@ public class ProxyConfig {
     }
 
     public boolean needProxy(String host, int ip) {
-        System.out.println(String.format("%s %s ", host, ip));
-        if (host != null) {
-            Boolean stateBoolean = getDomainState(host);
-            if (stateBoolean != null) {
-                return stateBoolean.booleanValue();
-            }
-        }
+//        System.out.println(String.format("%s %s ", host, ip));
 
-        if (isFakeIP(ip))
-            return true;
-
-        if (m_outside_china_use_proxy && ip != 0) {
-            return !ChinaIpMaskManager.isIPInChina(ip);
-        }
-        return false;
+        return true;
+//        if (host != null) {
+//            Boolean stateBoolean = getDomainState(host);
+//            if (stateBoolean != null) {
+//                return stateBoolean.booleanValue();
+//            }
+//        }
+//
+//        if (isFakeIP(ip))
+//            return true;
+//
+//        if (m_outside_china_use_proxy && ip != 0) {
+//            return !ChinaIpMaskManager.isIPInChina(ip);
+//        }
+//        return false;
     }
 
     public boolean isIsolateHttpHostHeader() {
